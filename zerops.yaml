@@ -1,0 +1,59 @@
+zerops:
+  # Production setup: builds optimized static assets served by Nginx.
+  # Developer or CI triggers this via zcli push or git integration.
+  - setup: prod
+    build:
+      # Build with Node.js (npm/npx), serve with Nginx.
+      # The build container compiles SolidStart into static HTML/CSS/JS
+      # — Node.js is NOT present at runtime.
+      base: nodejs@22
+
+      buildCommands:
+        - npm ci
+        # RUNTIME_ prefix exposes runtime env vars inside the build
+        # container. VITE_* bakes the value into the static bundle —
+        # static deployments have no runtime process to read env vars.
+        - VITE_APP_ENV=${RUNTIME_APP_ENV:-production} npm run build
+
+      # SolidStart static preset (Nitro) outputs to .output/public/.
+      # The ~ strips the directory prefix so .output/public/index.html
+      # becomes /index.html in the Nginx document root.
+      deployFiles:
+        - .output/public/~
+
+      cache:
+        - node_modules
+
+    run:
+      # Nginx serves the compiled output — no Node.js at runtime.
+      base: static
+      # Built-in SPA fallback: any path not matching a static file
+      # is served /index.html, enabling client-side SolidStart routing.
+      # No custom routing config needed.
+
+  # Dev setup: prepares a Node.js workspace for SSH development.
+  # The developer SSHs in and runs 'npm run dev' to start the dev server.
+  - setup: dev
+    build:
+      base: nodejs@22
+      os: ubuntu
+
+      buildCommands:
+        # npm install (not ci) — lock file may not exist in a fresh repo.
+        - npm install
+
+      # Deploy the full source tree so the developer has source
+      # code and node_modules ready immediately on SSH.
+      deployFiles: ./
+
+      cache:
+        - node_modules
+
+    run:
+      # nodejs@22 at runtime — developer needs Node.js to run
+      # 'npm run dev' (vinxi dev server) via SSH.
+      base: nodejs@22
+      os: ubuntu
+      # Keep the container alive without starting any server.
+      # The developer drives the dev server manually via SSH.
+      start: zsc noop --silent
