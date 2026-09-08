@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "vinxi dev",
-    "build": "vinxi build",
+    "build": "vinxi build && node scripts/verify-static-build.mjs",
     "start": "vinxi start"
   },
   "dependencies": {

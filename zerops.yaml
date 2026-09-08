@@ -8,12 +8,14 @@ zerops:
       # — Node.js is NOT present at runtime.
       base: nodejs@24
 
+      envVariables:
+        # Baked into the static bundle at build time. Override on the
+        # service with RUNTIME_VITE_APP_ENV without editing zerops.yaml.
+        VITE_APP_ENV: production
+
       buildCommands:
         - npm ci --include=dev
-        # RUNTIME_ prefix exposes runtime env vars inside the build
-        # container. VITE_* bakes the value into the static bundle —
-        # static deployments have no runtime process to read env vars.
-        - VITE_APP_ENV=${RUNTIME_APP_ENV:-production} npm run build
+        - npm run build
 
       # SolidStart static preset (Nitro) outputs to .output/public/.
       # The ~ strips the directory prefix so .output/public/index.html
