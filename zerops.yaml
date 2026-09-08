@@ -6,10 +6,10 @@ zerops:
       # Build with Node.js (npm/npx), serve with Nginx.
       # The build container compiles SolidStart into static HTML/CSS/JS
       # — Node.js is NOT present at runtime.
-      base: nodejs@22
+      base: nodejs@24
 
       buildCommands:
-        - npm ci
+        - npm ci --include=dev
         # RUNTIME_ prefix exposes runtime env vars inside the build
         # container. VITE_* bakes the value into the static bundle —
         # static deployments have no runtime process to read env vars.
@@ -35,7 +35,7 @@ zerops:
   # The developer SSHs in and runs 'npm run dev' to start the dev server.
   - setup: dev
     build:
-      base: nodejs@22
+      base: nodejs@24
       os: ubuntu
 
       buildCommands:
@@ -50,9 +50,9 @@ zerops:
         - node_modules
 
     run:
-      # nodejs@22 at runtime — developer needs Node.js to run
+      # nodejs@24 at runtime — developer needs Node.js to run
       # 'npm run dev' (vinxi dev server) via SSH.
-      base: nodejs@22
+      base: nodejs@24
       os: ubuntu
       # Keep the container alive without starting any server.
       # The developer drives the dev server manually via SSH.

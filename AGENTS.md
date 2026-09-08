@@ -6,7 +6,7 @@ Minimal SolidStart app using the Nitro static preset, built with Node.js and ser
 
 - HTTP port: `3000` (dev server) / `80` (prod nginx)
 - Siblings: —
-- Runtime base: `nodejs@22` (dev) / `static` (prod)
+- Runtime base: `nodejs@24` (dev) / `static` (prod)
 
 ## Zerops dev
 
@@ -19,6 +19,7 @@ Minimal SolidStart app using the Nitro static preset, built with Node.js and ser
 
 ## Notes
 
+- Prod build uses `npm ci --include=dev` — Zerops sets `NODE_ENV=production`, which omits devDependencies (Vinxi, TypeScript) unless explicitly included.
 - `VITE_*` env vars are baked into the static bundle at build time; use the `RUNTIME_` prefix (e.g. `VITE_APP_ENV=${RUNTIME_APP_ENV:-production}`) to forward runtime vars into the build.
 - Prod deploy strips the `.output/public/` prefix so Nitro's output becomes the Nginx document root.
 - Favicon lives in `public/favicon.ico`.
