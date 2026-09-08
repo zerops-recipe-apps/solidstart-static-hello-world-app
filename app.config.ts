@@ -7,6 +7,9 @@ function readPkgVersion(pkg: string): string {
 }
 
 export default defineConfig({
+  // Pure client-side SPA output — Nginx serves .output/public/ with
+  // SPA fallback. Avoids SSR hydration issues on static hosting.
+  ssr: false,
   server: {
     // Static preset: Nitro outputs pre-rendered HTML/CSS/JS to
     // .output/public/ — no server process runs at runtime.
