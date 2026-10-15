@@ -9,9 +9,9 @@ zerops:
       base: nodejs@24
 
       envVariables:
-        # Baked into the static bundle at build time. Override on the
-        # service with RUNTIME_VITE_APP_ENV without editing zerops.yaml.
-        VITE_APP_ENV: production
+        # Baked into the static bundle at build time. Service vault
+        # `APP_ENV` is exposed as RUNTIME_APP_ENV in the build shell.
+        VITE_APP_ENV: ${RUNTIME_APP_ENV:-production}
 
       buildCommands:
         - npm ci --include=dev
